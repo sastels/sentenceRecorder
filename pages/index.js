@@ -26,9 +26,9 @@ const createRecordingStream = () => {
     .catch(err => console.log("Uh oh... unable to get stream...", err));
 };
 
-// if (isBrowser) {
-//   createRecordingStream();
-// }
+if (isBrowser) {
+  createRecordingStream();
+}
 
 const styles = theme => ({
   app: {

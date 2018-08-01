@@ -1,8 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
 const next = require("next");
-const Cookies = require("universal-cookie");
 const helmet = require("helmet");
 
 const { parseUserAgent } = require("detect-browser");
@@ -11,11 +9,6 @@ const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
-// Promise.resolve(airTable.hydrateFromAirtable()).then(data => {
-
-// init i18next with serverside settings
-// using i18next-express-middleware
-// loaded translations we can bootstrap our routes
 app.prepare().then(() => {
   const server = express();
   server.use(bodyParser.json());
