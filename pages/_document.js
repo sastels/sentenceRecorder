@@ -7,7 +7,7 @@ import getPageContext from "../lib/pageContext";
 import { MuiThemeProvider } from "@material-ui/core/styles";
 
 const bodyStyling = {
-  fontFamily: "Merriweather, serif",
+  fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
   margin: 0
 };
 
