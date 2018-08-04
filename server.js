@@ -56,8 +56,8 @@ app.prepare().then(() => {
     res,
     next
   ) {
-    const fileName = "sentenceRecorder_" + Date.now();
-    console.log("uploading to aws:", req.body.sentence);
+    const fileName = "sentenceRecorder_" + req.body.id;
+    console.log("uploading", new Date().toUTCString(), fileName);
     try {
       await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
     } catch (error) {
@@ -77,7 +77,7 @@ app.prepare().then(() => {
       return res.status(400).send(error);
     }
     console.log("metadata success");
-    return res.status(200);
+    return res.status(200).send("Success!");
   });
 
   server.get("*", (req, res) => {

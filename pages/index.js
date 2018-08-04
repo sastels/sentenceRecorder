@@ -98,12 +98,22 @@ class App extends Component {
     fd.append("country", this.state.country);
     fd.append("city", this.state.city);
     fd.append("age", this.state.age);
+    fd.append(
+      "id",
+      Math.random()
+        .toString()
+        .substr(0, 10)
+    );
     fd.append("date", new Date().toUTCString());
-    fetch("/submitBlob", {
+    const result = fetch("/submitBlob", {
       headers: { Accept: "application/json" },
       method: "POST",
       body: fd
+    }).then(result => {
+      console.log("fetch result:", result);
     });
+
+    console.log(result);
     this.clearRecording();
   };
 
