@@ -5,17 +5,12 @@ const next = require("next");
 const helmet = require("helmet");
 const AWS = require("aws-sdk");
 const bluebird = require("bluebird");
-// const { parseUserAgent } = require("detect-browser");
 
 const dev = process.env.NODE_ENV !== "production";
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
 // configure the keys for accessing AWS
-
-console.log("AWS id ", process.env.AWS_ACCESS_KEY_ID);
-console.log("AWS key", process.env.AWS_SECRET_ACCESS_KEY);
-
 AWS.config.update({
   region: "us-west-2",
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
@@ -25,19 +20,17 @@ AWS.config.update({
 // configure AWS to work with promises
 AWS.config.setPromisesDependency(bluebird);
 
-console.log("AWS", AWS.Config);
-
 // create S3 instance
 const s3 = new AWS.S3();
 
 // abstracts function to upload a file returning a promise
-const uploadFile = (buffer, name, type) => {
+const uploadFile = (buffer, key, mimeType) => {
   const params = {
+    Bucket: process.env.AWS_BUCKET,
     ACL: "private",
     Body: buffer,
-    Bucket: "llf-logdata",
-    ContentType: type.mime,
-    Key: `${name}.${type.ext}`
+    Key: key,
+    ContentType: mimeType
   };
   return s3.upload(params).promise();
 };
@@ -64,25 +57,30 @@ app.prepare().then(() => {
     next
   ) {
     const fileName = "sentenceRecorder_" + Date.now();
-    // upload file to s3
+    console.log("uploading to aws");
     try {
-      console.log("uploading to aws");
-      const data = await uploadFile(
-        req.file.buffer,
-        fileName,
-        typeof req.file.buffer
-      );
-      return res.status(200).send(data);
+      await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
     } catch (error) {
-      console.log("Error!! ", error);
+      console.log("Error uploading wav!! ", error);
       return res.status(400).send(error);
     }
+    console.log("file success");
+
+    try {
+      await uploadFile(
+        JSON.stringify(req.body, null, 2),
+        fileName + ".json",
+        "application/json"
+      );
+    } catch (error) {
+      console.log("Error uploading metadata!! ", error);
+      return res.status(400).send(error);
+    }
+    console.log("metadata success");
+    return res.status(200);
   });
 
   server.get("*", (req, res) => {
-    // Check if browse is less than IE 11
-    // const ua = req.headers["user-agent"];
-    // const browser = parseUserAgent(ua);
     handle(req, res);
   });
 
