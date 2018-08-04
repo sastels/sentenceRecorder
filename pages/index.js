@@ -5,6 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Recorder from "recorder-js";
+const uuid = require("uuid");
 require("isomorphic-fetch");
 
 const isBrowser = typeof window !== "undefined";
@@ -98,12 +99,7 @@ class App extends Component {
     fd.append("country", this.state.country);
     fd.append("city", this.state.city);
     fd.append("age", this.state.age);
-    fd.append(
-      "id",
-      Math.random()
-        .toString()
-        .substr(0, 10)
-    );
+    fd.append("id", uuid.v4());
     fd.append("date", new Date().toUTCString());
     const result = fetch("/submitBlob", {
       headers: { Accept: "application/json" },
@@ -112,8 +108,6 @@ class App extends Component {
     }).then(result => {
       console.log("fetch result:", result);
     });
-
-    console.log(result);
     this.clearRecording();
   };
 
