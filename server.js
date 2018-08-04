@@ -56,7 +56,7 @@ app.prepare().then(() => {
     res,
     next
   ) {
-    const fileName = "sentenceRecorder_" + req.body.id;
+    const fileName = process.env.DEBUG + "sentenceRecorder_" + req.body.id;
     console.log("uploading", new Date().toUTCString(), fileName);
     try {
       await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
