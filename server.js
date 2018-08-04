@@ -57,7 +57,7 @@ app.prepare().then(() => {
     next
   ) {
     const fileName = "sentenceRecorder_" + Date.now();
-    console.log("uploading to aws");
+    console.log("uploading to aws:", req.body.sentence);
     try {
       await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
     } catch (error) {

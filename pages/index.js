@@ -65,7 +65,7 @@ const styles = theme => ({
 
 class App extends Component {
   state = {
-    audioStreamCreated: true,
+    // audioStreamCreated: true,
     sentences: ["Go attack the germs!!", "This is Khalai."],
     sentenceIndex: 0,
     blob: null,
@@ -104,6 +104,7 @@ class App extends Component {
       method: "POST",
       body: fd
     });
+    this.clearRecording();
   };
 
   clearRecording = () => {
@@ -211,7 +212,11 @@ class App extends Component {
         {this.state.blob ? (
           <div>
             <audio controls={true} src={URL.createObjectURL(this.state.blob)} />
-            <Button className={classes.button} onClick={this.upload}>
+            <Button
+              className={classes.button}
+              onClick={this.upload}
+              disabled={this.state.isRecording}
+            >
               Upload
             </Button>
           </div>
