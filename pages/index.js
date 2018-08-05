@@ -7,6 +7,7 @@ require("isomorphic-fetch");
 const uuid = require("uuid");
 import RecordAudio from "../components/recordAudio";
 import Profile from "../components/profile";
+import Finished from "../components/finished";
 
 const styles = theme => ({
   app: {
@@ -20,10 +21,11 @@ const styles = theme => ({
 
 class App extends Component {
   state = {
-    section: "recorder",
+    section: "profile",
     country: "",
     city: "",
-    age: ""
+    age: "",
+    email: ""
   };
 
   handleTextInput = field => event => {
@@ -33,6 +35,8 @@ class App extends Component {
   };
 
   uploadAudio = (sentence, blob) => {
+    return 0;
+
     let fd = new FormData();
     fd.append("audio", blob);
     fd.append("sentence", sentence);
@@ -67,7 +71,13 @@ class App extends Component {
           />
         );
       case "finished":
-        return <div>Finished!!!!</div>;
+        return (
+          <Finished
+            nextSection={() => this.setState({ section: "finished" })}
+            email={this.state.email}
+            handleTextInput={this.handleTextInput}
+          />
+        );
     }
   };
 
