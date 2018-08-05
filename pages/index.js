@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+// import Typography from "@material-ui/core/Typography";
 
 require("isomorphic-fetch");
 const uuid = require("uuid");
@@ -20,7 +20,7 @@ const styles = theme => ({
 
 class App extends Component {
   state = {
-    section: "profile",
+    section: "recorder",
     country: "",
     city: "",
     age: ""
@@ -55,12 +55,19 @@ class App extends Component {
       case "profile":
         return (
           <Profile
+            nextSection={() => this.setState({ section: "recorder" })}
             handleTextInput={this.handleTextInput}
-            setSection={() => this.setState({ section: "recorder" })}
           />
         );
       case "recorder":
-        return <RecordAudio uploadAudio={this.uploadAudio} />;
+        return (
+          <RecordAudio
+            nextSection={() => this.setState({ section: "finished" })}
+            uploadAudio={this.uploadAudio}
+          />
+        );
+      case "finished":
+        return <div>Finished!!!!</div>;
     }
   };
 
@@ -68,9 +75,9 @@ class App extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.app}>
-        <Typography variant="display1" className={classes.title}>
-          Sentence Recorder
-        </Typography>
+        {/*<Typography variant="display1" className={classes.title}>*/}
+        {/*Sentence Recorder*/}
+        {/*</Typography>*/}
         {this.sectionToDisplay(this.state.section)}
       </div>
     );

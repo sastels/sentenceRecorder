@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
+
 import Recorder from "recorder-js";
 
 const isBrowser = typeof window !== "undefined";
@@ -33,6 +35,9 @@ const styles = theme => ({
   app: {
     textAlign: "center",
     padding: "10px"
+  },
+  title: {
+    marginBottom: 6 * theme.spacing.unit
   },
   sentence: {
     margin: 2 * theme.spacing.unit
@@ -73,13 +78,12 @@ class RecordAudio extends Component {
     }
   };
 
-  upload = () => {
-    this.props.uploadAudio(this.state.sentences[this.state.sentenceIndex]);
-    this.clearRecording();
-  };
-
   clearRecording = () => {
     this.setState({ blob: null });
+  };
+
+  upload = () => {
+    this.props.uploadAudio(this.state.sentences[this.state.sentenceIndex]);
   };
 
   addToIndex = increment => {
@@ -88,12 +92,54 @@ class RecordAudio extends Component {
         (this.state.sentenceIndex + increment + this.state.sentences.length) %
         this.state.sentences.length
     });
+    this.clearRecording();
   };
 
-  handleTextInput = field => event => {
-    this.setState({
-      [field]: event.target.value
-    });
+  buttonValue = () => {
+    switch (true) {
+      case this.state.blob != null:
+        return "Record Again";
+      case this.state.isRecording:
+        return "Stop";
+      default:
+        return "Record";
+    }
+  };
+
+  handleButtonPress = () => {
+    switch (this.buttonValue()) {
+      case "Stop":
+        this.stopRecording();
+        break;
+      default:
+        this.startRecording();
+    }
+  };
+
+  recordingMessage = () => {
+    switch (true) {
+      case this.buttonValue() === "Record":
+        return "Press Record to begin";
+      case this.buttonValue() === "Stop":
+        return "Recording... Press Stop to end";
+      case this.state.sentenceIndex < this.state.sentences.length - 1:
+        return "Done recording! Go to Next page or re-record this page.";
+      default:
+        return "Done recording! Re-record or press Next to finish";
+    }
+  };
+
+  handlePreviousButton = () => {
+    this.addToIndex(-1);
+  };
+
+  handleNextButton = () => {
+    this.upload();
+    if (this.state.sentenceIndex === this.state.sentences.length - 1) {
+      this.props.nextSection();
+    } else {
+      this.addToIndex(1);
+    }
   };
 
   render() {
@@ -102,6 +148,10 @@ class RecordAudio extends Component {
 
     return (
       <div className={classes.app}>
+        <Typography variant="headline" className={classes.title}>
+          Read a short story
+        </Typography>
+
         <Typography variant="title" className={classes.sentence}>
           {sentence}
         </Typography>
@@ -109,45 +159,31 @@ class RecordAudio extends Component {
         <div className={classes.navigationButtonContainer}>
           <Button
             className={classes.button}
-            onClick={() => this.addToIndex(-1)}
+            onClick={this.handlePreviousButton}
+            disabled={this.state.sentenceIndex === 0}
           >
-            Previous
+            <KeyboardArrowLeft />
           </Button>
-          <Button className={classes.button} onClick={() => this.addToIndex(1)}>
-            Next
-          </Button>
-        </div>
 
-        <div className={classes.recordingLine}>
-          Recording: {this.state.isRecording ? "Recording" : "Not Recording"}
-        </div>
-
-        <div>
           <Button
             variant="contained"
             color="secondary"
             className={classes.button}
-            onClick={this.startRecording}
+            onClick={this.handleButtonPress}
           >
-            Record
+            {this.buttonValue()}
           </Button>
+
           <Button
-            variant="contained"
-            color="primary"
             className={classes.button}
-            onClick={this.stopRecording}
+            onClick={this.handleNextButton}
+            disabled={this.state.blob === null}
           >
-            Stop
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={this.clearRecording}
-          >
-            Clear
+            <KeyboardArrowRight />
           </Button>
         </div>
+
+        <div className={classes.recordingLine}>{this.recordingMessage()}</div>
 
         {this.state.blob ? (
           <div>
@@ -163,6 +199,10 @@ class RecordAudio extends Component {
         ) : (
           ""
         )}
+
+        <div style={{ marginTop: "50px" }}>
+          Page {this.state.sentenceIndex + 1} / {this.state.sentences.length}
+        </div>
       </div>
     );
   }
@@ -170,7 +210,8 @@ class RecordAudio extends Component {
 
 RecordAudio.propTypes = {
   classes: PropTypes.object.isRequired,
-  uploadAudio: PropTypes.func.isRequired
+  uploadAudio: PropTypes.func.isRequired,
+  nextSection: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(RecordAudio);

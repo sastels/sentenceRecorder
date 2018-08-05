@@ -97,7 +97,7 @@ class Profile extends Component {
           variant="contained"
           color="primary"
           className={classes.button}
-          onClick={this.props.setSection}
+          onClick={this.props.nextSection}
           disabled={!this.state.termsChecked}
         >
           Submit
@@ -110,7 +110,7 @@ class Profile extends Component {
 Profile.propTypes = {
   classes: PropTypes.object.isRequired,
   handleTextInput: PropTypes.func.isRequired,
-  setSection: PropTypes.func.isRequired
+  nextSection: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(Profile);
