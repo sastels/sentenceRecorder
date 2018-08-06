@@ -56,16 +56,25 @@ app.prepare().then(() => {
     res,
     next
   ) {
-    const fileName = process.env.DEBUG + "sentenceRecorder_" + req.body.id;
-    console.log("uploading", new Date().toUTCString(), fileName);
-    try {
-      await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
-    } catch (error) {
-      console.log("Error uploading wav!! ", error);
-      return res.status(400).send(error);
+    let fileName = process.env.DEBUG + "llf_sentence_" + req.body.id;
+    if (req.body.email !== undefined) {
+      fileName = fileName + "_email";
+    } else if (req.file !== undefined) {
+      fileName = fileName + "_audio_" + req.body.sentenceIndex;
     }
-    console.log("file success");
 
+    console.log("uploading", new Date().toUTCString(), fileName);
+    console.log("body:", req.body);
+
+    if (req.file !== undefined) {
+      try {
+        await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
+      } catch (error) {
+        console.log("Error uploading wav!! ", error);
+        return res.status(400).send(error);
+      }
+      console.log("file success");
+    }
     try {
       await uploadFile(
         JSON.stringify(req.body, null, 2),

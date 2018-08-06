@@ -30,7 +30,8 @@ const styles = theme => ({
 
 class Finished extends Component {
   state = {
-    email: ""
+    email: "",
+    emailUploaded: false
   };
 
   handleTextInput = field => event => {
@@ -57,23 +58,32 @@ class Finished extends Component {
         </Typography>
 
         <div>
-          <TextField
-            id="email"
-            label="email address"
-            className={classes.textField}
-            value={this.state.email}
-            onChange={this.handleTextInput("email")}
-            margin="normal"
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={() => this.props.uploadEmail(this.state.email)}
-            disabled={this.state.email === ""}
-          >
-            Submit Email
-          </Button>
+          {this.state.emailUploaded ? (
+            <Typography variant="display1">Thanks!!!</Typography>
+          ) : (
+            <div>
+              <TextField
+                id="email"
+                label="email address"
+                className={classes.textField}
+                value={this.state.email}
+                onChange={this.handleTextInput("email")}
+                margin="normal"
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={() => {
+                  this.setState({ emailUploaded: true });
+                  this.props.uploadEmail(this.state.email);
+                }}
+                disabled={this.state.email === ""}
+              >
+                Submit Email
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     );

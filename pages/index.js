@@ -12,7 +12,8 @@ import Finished from "../components/finished";
 const styles = theme => ({
   app: {
     textAlign: "center",
-    padding: "10px"
+    padding: "10px",
+    maxWidth: "700px"
   },
   title: {
     marginBottom: 4 * theme.spacing.unit
@@ -22,7 +23,7 @@ const styles = theme => ({
 class App extends Component {
   state = {
     id: uuid.v4(),
-    section: "profile",
+    section: "finished",
     country: "",
     city: "",
     age: "",
@@ -36,8 +37,6 @@ class App extends Component {
   };
 
   uploadAudio = (sentence, sentenceIndex, blob) => {
-    return 0;
-
     let fd = new FormData();
     fd.append("audio", blob);
     fd.append("sentence", sentence);
@@ -52,12 +51,24 @@ class App extends Component {
       method: "POST",
       body: fd
     }).then(result => {
-      console.log("fetch result:", result); // eslint-disable-line no-console
+      console.log("audio fetch result:", result); // eslint-disable-line no-console
     });
   };
 
   uploadEmail = email => {
     console.log("uploading email", email);
+
+    let fd = new FormData();
+    fd.append("id", this.state.id);
+    fd.append("audio", null);
+    fd.append("email", email);
+    fetch("/submitBlob", {
+      headers: { Accept: "application/json" },
+      method: "POST",
+      body: fd
+    }).then(result => {
+      console.log("email fetch result:", result); // eslint-disable-line no-console
+    });
   };
 
   sectionToDisplay = section => {
