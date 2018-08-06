@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import TextField from "@material-ui/core/TextField";
-import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
 
 const styles = theme => ({
@@ -30,16 +29,26 @@ const styles = theme => ({
 });
 
 class Finished extends Component {
+  state = {
+    email: ""
+  };
+
+  handleTextInput = field => event => {
+    this.setState({
+      [field]: event.target.value
+    });
+  };
+
   render() {
     const { classes } = this.props;
 
     return (
       <div className={classes.app}>
         <Typography variant="headline" className={classes.title}>
-          You're done!
+          You are done!
         </Typography>
         <Typography variant="headline" className={classes.title}>
-          Thanks for reading. Come back later and we'll guess your accent and
+          Thanks for reading. Come back later and we will guess your accent and
           age!
         </Typography>
         <Typography variant="headline" className={classes.title}>
@@ -52,10 +61,19 @@ class Finished extends Component {
             id="email"
             label="email address"
             className={classes.textField}
-            value={this.props.email}
-            onChange={this.props.handleTextInput("email")}
+            value={this.state.email}
+            onChange={this.handleTextInput("email")}
             margin="normal"
           />
+          <Button
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            onClick={() => this.props.uploadEmail(this.state.email)}
+            disabled={this.state.email === ""}
+          >
+            Submit Email
+          </Button>
         </div>
       </div>
     );
@@ -64,9 +82,7 @@ class Finished extends Component {
 
 Finished.propTypes = {
   classes: PropTypes.object.isRequired,
-  email: PropTypes.string.isRequired,
-  handleTextInput: PropTypes.func.isRequired,
-  nextSection: PropTypes.func.isRequired
+  uploadEmail: PropTypes.func.isRequired
 };
 
 export default withStyles(styles)(Finished);

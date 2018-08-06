@@ -21,6 +21,7 @@ const styles = theme => ({
 
 class App extends Component {
   state = {
+    id: uuid.v4(),
     section: "profile",
     country: "",
     city: "",
@@ -34,16 +35,17 @@ class App extends Component {
     });
   };
 
-  uploadAudio = (sentence, blob) => {
+  uploadAudio = (sentence, sentenceIndex, blob) => {
     return 0;
 
     let fd = new FormData();
     fd.append("audio", blob);
     fd.append("sentence", sentence);
+    fd.append("sentenceIndex", sentenceIndex);
     fd.append("country", this.state.country);
     fd.append("city", this.state.city);
     fd.append("age", this.state.age);
-    fd.append("id", uuid.v4());
+    fd.append("id", this.state.id);
     fd.append("date", new Date().toUTCString());
     fetch("/submitBlob", {
       headers: { Accept: "application/json" },
@@ -52,6 +54,10 @@ class App extends Component {
     }).then(result => {
       console.log("fetch result:", result); // eslint-disable-line no-console
     });
+  };
+
+  uploadEmail = email => {
+    console.log("uploading email", email);
   };
 
   sectionToDisplay = section => {
@@ -71,13 +77,7 @@ class App extends Component {
           />
         );
       case "finished":
-        return (
-          <Finished
-            nextSection={() => this.setState({ section: "finished" })}
-            email={this.state.email}
-            handleTextInput={this.handleTextInput}
-          />
-        );
+        return <Finished uploadEmail={this.uploadEmail} />;
     }
   };
 

@@ -83,7 +83,11 @@ class RecordAudio extends Component {
   };
 
   upload = () => {
-    this.props.uploadAudio(this.state.sentences[this.state.sentenceIndex]);
+    this.props.uploadAudio(
+      this.state.sentences[this.state.sentenceIndex],
+      this.state.sentenceIndex,
+      this.state.blob
+    );
   };
 
   addToIndex = increment => {
