@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-// import Typography from "@material-ui/core/Typography";
 
 require("isomorphic-fetch");
 const uuid = require("uuid");
@@ -12,8 +11,7 @@ import Finished from "../components/finished";
 const styles = theme => ({
   app: {
     textAlign: "center",
-    padding: "10px",
-    maxWidth: "700px"
+    padding: "10px"
   },
   title: {
     marginBottom: 4 * theme.spacing.unit
@@ -22,7 +20,7 @@ const styles = theme => ({
 
 class App extends Component {
   state = {
-    id: uuid.v4(),
+    id: uuid.v4().substring(0, 8),
     section: "profile",
     country: "",
     city: "",
@@ -46,7 +44,7 @@ class App extends Component {
     fd.append("age", this.state.age);
     fd.append("id", this.state.id);
     fd.append("date", new Date().toUTCString());
-    fetch("/submitBlob", {
+    fetch("/submitData", {
       headers: { Accept: "application/json" },
       method: "POST",
       body: fd
@@ -56,13 +54,11 @@ class App extends Component {
   };
 
   uploadEmail = email => {
-    console.log("uploading email", email);
-
     let fd = new FormData();
     fd.append("id", this.state.id);
     fd.append("audio", null);
     fd.append("email", email);
-    fetch("/submitBlob", {
+    fetch("/submitData", {
       headers: { Accept: "application/json" },
       method: "POST",
       body: fd

@@ -41,31 +41,24 @@ app.prepare().then(() => {
   server.use(helmet());
 
   const storage = multer.memoryStorage();
-  // const storage = multer.diskStorage({
-  //   destination: function(req, file, cb) {
-  //     cb(null, "/tmp/my-uploads");
-  //   },
-  //   filename: function(req, file, cb) {
-  //     cb(null, file.fieldname + "-" + Date.now());
-  //   }
-  // });
   const upload = multer({ storage: storage });
 
-  server.post("/submitBlob", upload.single("audio"), async function(
+  server.post("/submitData", upload.single("audio"), async function(
     req,
     res,
     next
   ) {
-    let fileName = process.env.DEBUG + "llf_sentence_" + req.body.id;
+    let fileName = process.env.DEBUG + "recorder_" + req.body.id;
     if (req.body.email !== undefined) {
       fileName = fileName + "_email";
     } else if (req.file !== undefined) {
       fileName = fileName + "_audio_" + req.body.sentenceIndex;
     }
 
-    console.log("uploading", new Date().toUTCString(), fileName);
-    console.log("body:", req.body);
-
+    if (process.env.DEBUG === "local_") {
+      console.log("uploading", new Date().toUTCString(), fileName);
+      console.log("body:", req.body);
+    }
     if (req.file !== undefined) {
       try {
         await uploadFile(req.file.buffer, fileName + ".wav", "audio/x-wav");
@@ -73,7 +66,9 @@ app.prepare().then(() => {
         console.log("Error uploading wav!! ", error);
         return res.status(400).send(error);
       }
-      console.log("file success");
+      if (process.env.DEBUG === "local_") {
+        console.log("file success");
+      }
     }
     try {
       await uploadFile(
@@ -85,7 +80,9 @@ app.prepare().then(() => {
       console.log("Error uploading metadata!! ", error);
       return res.status(400).send(error);
     }
-    console.log("metadata success");
+    if (process.env.DEBUG === "local_") {
+      console.log("body success");
+    }
     return res.status(200).send("Success!");
   });
 
