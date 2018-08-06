@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import { KeyboardArrowLeft, KeyboardArrowRight } from "@material-ui/icons";
-
+import green from "@material-ui/core/colors/green";
 import Recorder from "recorder-js";
 
 const isBrowser = typeof window !== "undefined";
@@ -13,12 +14,7 @@ const audioContext = isBrowser
   ? new (window.AudioContext || window.webkitAudioContext)()
   : undefined;
 
-const recorder = new Recorder(audioContext, {
-  // An array of 255 Numbers
-  // You can use this to visualize the audio stream
-  // If you use react, check out react-wave-stream
-  // onAnalysed: data => console.log(data),
-});
+const recorder = new Recorder(audioContext, {});
 
 const createRecordingStream = () => {
   navigator.mediaDevices
@@ -50,6 +46,19 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     marginBottom: 4 * theme.spacing.unit
   },
+  nextButton: {
+    textTransform: "none",
+    margin: theme.spacing.unit,
+    marginBottom: 4 * theme.spacing.unit,
+    backgroundColor: green[500],
+    "&:hover": {
+      backgroundColor: green[700]
+    },
+    "&:disabled": {
+      backgroundColor: "#fff"
+    }
+  },
+
   recordingLine: {
     margin: theme.spacing.unit
   }
@@ -161,13 +170,13 @@ class RecordAudio extends Component {
         </Typography>
 
         <div className={classes.navigationButtonContainer}>
-          <Button
+          <IconButton
             className={classes.button}
             onClick={this.handlePreviousButton}
             disabled={this.state.sentenceIndex === 0}
           >
             <KeyboardArrowLeft />
-          </Button>
+          </IconButton>
 
           <Button
             variant="contained"
@@ -178,13 +187,13 @@ class RecordAudio extends Component {
             {this.buttonValue()}
           </Button>
 
-          <Button
-            className={classes.button}
+          <IconButton
+            className={classes.nextButton}
             onClick={this.handleNextButton}
             disabled={this.state.blob === null}
           >
             <KeyboardArrowRight />
-          </Button>
+          </IconButton>
         </div>
 
         <div className={classes.recordingLine}>{this.recordingMessage()}</div>
@@ -192,13 +201,6 @@ class RecordAudio extends Component {
         {this.state.blob ? (
           <div>
             <audio controls={true} src={URL.createObjectURL(this.state.blob)} />
-            <Button
-              className={classes.button}
-              onClick={this.upload}
-              disabled={this.state.isRecording}
-            >
-              Upload
-            </Button>
           </div>
         ) : (
           ""

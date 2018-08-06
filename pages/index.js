@@ -23,7 +23,7 @@ const styles = theme => ({
 class App extends Component {
   state = {
     id: uuid.v4(),
-    section: "finished",
+    section: "profile",
     country: "",
     city: "",
     age: "",
@@ -96,9 +96,6 @@ class App extends Component {
     const { classes } = this.props;
     return (
       <div className={classes.app}>
-        {/*<Typography variant="display1" className={classes.title}>*/}
-        {/*Sentence Recorder*/}
-        {/*</Typography>*/}
         {this.sectionToDisplay(this.state.section)}
       </div>
     );
