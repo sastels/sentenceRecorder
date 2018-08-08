@@ -86,9 +86,7 @@ class App extends Component {
           />
         );
       case "no-mic":
-        return (
-          <NoMic nextSection={() => this.setState({ section: "recorder" })} />
-        );
+        return <NoMic nextSection={() => (window.location.href = "/")} />;
       case "finished":
         return <Finished uploadEmail={this.uploadEmail} />;
     }
