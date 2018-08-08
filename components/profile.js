@@ -21,6 +21,7 @@ const styles = theme => ({
   },
   formControl: {
     margin: theme.spacing.unit,
+    textAlign: "left",
     width: 200
   },
   selectEmpty: {
