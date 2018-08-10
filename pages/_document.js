@@ -62,7 +62,7 @@ class MyDocument extends Document {
   render() {
     return (
       <html>
-        <Head title="Kasuku Recorder" description="Kasuku Recorder">
+        <Head>
           <style dangerouslySetInnerHTML={{ __html: this.props.css }} />
         </Head>
         <body style={bodyStyling}>
